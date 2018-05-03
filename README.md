@@ -2,12 +2,25 @@
 
 This is a fork from [miniupnp/miniupnpd](https://github.com/miniupnp/miniupnp/miniupnpd) allowing to execute a shell script on UPnP leasing (similar to dnsmasq lease script).
 
-To enable this option, add `#define ENABLE_LEASESCRIPT` in your `config.h` file
-prior to building the project. **The LEASEFILE option must be enabled for it to work.**
-Using [`genconfig.sh`](./genconfig.sh), the lease script option is enabled along with the pre-existing lease_file option.
+## Getting Started
 
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
-# MiniUPnP project
+- Refer to the [INSTALL](./INSTALL) file for installation
+
+- Prior to building the project with `make -f Makefile.linux`, make sure you have the following flags enabled in your `config.h` file:
+  ```c
+  #define ENABLE_LEASEFILE
+  #define ENABLE_LEASESCRIPT
+  ```
+
+- Alternatively, using the [`genconfig.sh`](./genconfig.sh) script (Buildroot / OpenWRT builds), the option is enabled along with the `--leasefile` flag.
+
+## Contributors
+
+- **Alexis Facques** - *Added the script file option* - [/alexisfacques](https://github.com/alexisfacques)
+
+## Original README
 
 MiniUPnP project
 (c) 2006-2017 Thomas Bernard

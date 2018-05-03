@@ -1304,6 +1304,11 @@ init(int argc, char * * argv, struct runtime_vars * v)
 			case UPNPLEASEFILE:
 				lease_file = ary_options[i].value;
 				break;
+#ifdef ENABLE_LEASESCRIPT
+			case UPNPLEASESCRIPT:
+				lease_script = ary_options[i].value;
+				break;
+#endif	/* LEASESCRIPT: ENABLE_LEASESCRIPT */
 #endif	/* ENABLE_LEASEFILE */
 			case UPNPMINISSDPDSOCKET:
 				minissdpdsocketpath = ary_options[i].value;
@@ -2738,4 +2743,3 @@ shutdown:
 
 	return 0;
 }
-

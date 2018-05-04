@@ -44,15 +44,13 @@
 #endif
 #ifdef ENABLE_LEASEFILE
 #include <sys/stat.h>
-
+#endif
 /* LEASESCRIPT */
 #ifdef ENABLE_LEASESCRIPT
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
 #include <stdio.h>
-#endif
-
 #endif
 
 /* from <inttypes.h> */
@@ -98,8 +96,6 @@ proto_itoa(int proto)
 	}
 	return protocol;
 }
-
-#ifdef ENABLE_LEASEFILE
 
 #ifdef ENABLE_LEASESCRIPT
 static int
@@ -168,6 +164,8 @@ lease_notice(const char * op,
 }
 #endif
 
+#ifdef ENABLE_LEASEFILE
+
 static int
 lease_file_add(unsigned short eport,
                const char * iaddr,
@@ -177,10 +175,6 @@ lease_file_add(unsigned short eport,
                unsigned int timestamp)
 {
 	FILE * fd;
-
-	#ifdef ENABLE_LEASESCRIPT
-	lease_notice("add",eport,iaddr,iport,proto,desc,timestamp);
- 	#endif
 
 	if (lease_file == NULL) return 0;
 
@@ -216,10 +210,6 @@ lease_file_remove(unsigned short eport, int proto)
 	char str[32];
 	char tmpfilename[128];
 	int str_size, buf_size;
-
-	#ifdef ENABLE_LEASESCRIPT
-	lease_notice("del",eport,"",0,proto,"",0);
-	#endif
 
 	if (lease_file == NULL) return 0;
 
@@ -489,6 +479,12 @@ upnp_redirect(const char * rhost, unsigned short eport,
 			} else {
 				r = update_portmapping_desc_timestamp(ext_if_name, eport, proto, desc, timestamp);
 			}
+#ifdef ENABLE_LEASESCRIPT
+			if(r == 0) {
+				lease_notice("up",eport, iaddr, iport, proto, desc, timestamp);
+			}
+#endif /* ENABLE_LEASESCRIPT */
+
 #ifdef ENABLE_LEASEFILE
 			if(r == 0) {
 				lease_file_remove(eport, proto);
@@ -528,6 +524,10 @@ upnp_redirect_internal(const char * rhost, unsigned short eport,
 	                      desc, timestamp) < 0) {
 		return -1;
 	}
+
+#ifdef ENABLE_LEASESCRIPT
+	lease_notice("add",eport, iaddr, iport, proto, desc, timestamp);
+#endif /* ENABLE_LEASESCRIPT */
 
 #ifdef ENABLE_LEASEFILE
 	lease_file_add( eport, iaddr, iport, proto, desc, timestamp);
@@ -640,6 +640,11 @@ _upnp_delete_redir(unsigned short eport, int proto)
 	r = delete_redirect_rule(ext_if_name, eport, proto);
 	delete_filter_rule(ext_if_name, eport, proto);
 #endif
+
+#ifdef ENABLE_LEASESCRIPT
+	lease_notice("del", eport, "", 0, proto, "", 0);
+#endif /* ENABLE_LEASESCRIPT */
+
 #ifdef ENABLE_LEASEFILE
 	lease_file_remove( eport, proto);
 #endif

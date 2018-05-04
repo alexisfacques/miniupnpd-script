@@ -19,12 +19,11 @@ const char * ext_if_name = 0;
 /* file to store leases */
 #ifdef ENABLE_LEASEFILE
 const char* lease_file = 0;
+#endif
 
 /* LEASESCRIPT: script to call on lease */
 #ifdef ENABLE_LEASESCRIPT
 const char* lease_script = 0;
-#endif
-
 #endif
 
 /* forced ip address to use for this interface

@@ -64,9 +64,9 @@ enum upnpconfigoptions {
 	UPNPSECUREMODE,			/* secure_mode */
 #ifdef ENABLE_LEASEFILE
 	UPNPLEASEFILE,			/* lease_file */
+#endif
 #ifdef ENABLE_LEASESCRIPT
 	UPNPLEASESCRIPT,			/* LEASESCRIPT: lease_script */
-#endif
 #endif
 	UPNPMINISSDPDSOCKET,	/* minissdpdsocket */
 #ifdef IGD_V2

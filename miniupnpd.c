@@ -1304,12 +1304,12 @@ init(int argc, char * * argv, struct runtime_vars * v)
 			case UPNPLEASEFILE:
 				lease_file = ary_options[i].value;
 				break;
+#endif	/* ENABLE_LEASEFILE */
 #ifdef ENABLE_LEASESCRIPT
 			case UPNPLEASESCRIPT:
 				lease_script = ary_options[i].value;
 				break;
-#endif	/* LEASESCRIPT: ENABLE_LEASESCRIPT */
-#endif	/* ENABLE_LEASEFILE */
+#endif	/* ENABLE_LEASESCRIPT */
 			case UPNPMINISSDPDSOCKET:
 				minissdpdsocketpath = ary_options[i].value;
 				break;
@@ -1729,10 +1729,10 @@ init(int argc, char * * argv, struct runtime_vars * v)
 	/*remove(lease_file);*/
 	syslog(LOG_INFO, "Reloading rules from lease file");
 	reload_from_lease_file();
+#endif
 
-	#ifdef ENABLE_LEASESCRIPT
-		syslog(LOG_INFO, "Lease script is enabled");
-	#endif
+#ifdef ENABLE_LEASESCRIPT
+	syslog(LOG_INFO, "Lease script is enabled");
 #endif
 
 #ifdef TOMATO

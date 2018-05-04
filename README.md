@@ -8,9 +8,8 @@ These instructions will get you a copy of the project up and running on your loc
 
 - Refer to the [INSTALL](./INSTALL) file for installation
 
-- Prior to building the project with `make -f Makefile.linux`, make sure you have the following flags enabled in your `config.h` file:
+- Prior to building the project with `make -f Makefile.linux`, make sure you have the following flag enabled in your `config.h` file:
   ```c
-  #define ENABLE_LEASEFILE
   #define ENABLE_LEASESCRIPT
   ```
 

@@ -124,7 +124,7 @@ lease_notice(const char * op,
 	if ((pid = fork()) == 0) {
 	  // Child process.
 		syslog(LOG_INFO, "Executing script: %s", lease_script);
-		execl("/bin/sh", "sh", lease_script, op, str_eport, iaddr, str_iport, str_proto, desc, str_timestamp, NULL);
+		execl("/bin/sh", "sh", lease_script, op, str_eport, str_proto, iaddr, str_iport, desc, str_timestamp, NULL);
 	  // If execl() was successful, this won't be reached.
 	  _exit(127);
 	}

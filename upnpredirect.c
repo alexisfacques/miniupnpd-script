@@ -48,6 +48,7 @@
 /* LEASESCRIPT */
 #ifdef ENABLE_LEASESCRIPT
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <unistd.h>
 #include <stdio.h>
 #endif
@@ -111,20 +112,59 @@ lease_notice(const char * op,
                unsigned int timestamp)
 {
 	pid_t pid;
+  int status;
+	char str_eport[30];
+	char str_iport[30];
+	char str_proto[30];
+	char str_timestamp[30];
+
+	sprintf(str_eport, "%d", eport);
+	sprintf(str_iport, "%d", iport);
+	sprintf(str_proto, "%d", proto);
+	sprintf(str_timestamp, "%d", timestamp);
 
 	if (lease_script == NULL) return 0;
 
-	if ((pid = fork()) == -1) {
-		perror("fork error");
-		return -1;
+	if ((pid = fork()) == 0) {
+	  // Child process.
+		syslog(LOG_INFO, "Executing script: %s", lease_script);
+		execl("/bin/sh", "sh", lease_script, op, str_eport, iaddr, str_iport, str_proto, desc, str_timestamp, NULL);
+	  // If execl() was successful, this won't be reached.
+	  _exit(127);
 	}
 
-	else if (pid == 0) {
-			syslog(LOG_INFO, "Executing script");
-		 execl(lease_script, op, eport, iaddr, iport, proto, desc, timestamp, NULL);
-		 return -1;
+	if (pid > 0) {
+		// Parent process calls waitpid() on the child
+	  if (waitpid(pid, &status, 0) > 0) {
+			if (WIFEXITED(status) && !WEXITSTATUS(status)) {
+				syslog(LOG_INFO, "Script execution was successful.");
+				return 0;
+	    }
+			else if (WIFEXITED(status) && WEXITSTATUS(status)) {
+				if (WEXITSTATUS(status) == 127) {
+					syslog(LOG_INFO, "Lease script: execl failed.");
+					return -1;
+	      }
+				else {
+					syslog(LOG_INFO, "Script execution terminated normally, but returned a non-zero status.");
+					return 0;
+	      }
+	    }
+			else {
+				syslog(LOG_INFO, "Script execution did not terminate normally.");
+				return -1;
+	    }
+	  }
+		else {
+			syslog(LOG_INFO, "Lease script: waitpid() failed.");
+			return -1;
+	  }
 	}
-	return 0;
+
+	else {
+		syslog(LOG_INFO, "Lease script: Failed to fork.");
+		return -1;
+	}
 }
 #endif
 

@@ -1729,6 +1729,10 @@ init(int argc, char * * argv, struct runtime_vars * v)
 	/*remove(lease_file);*/
 	syslog(LOG_INFO, "Reloading rules from lease file");
 	reload_from_lease_file();
+
+	#ifdef ENABLE_LEASESCRIPT
+		syslog(LOG_INFO, "Lease script is enabled");
+	#endif
 #endif
 
 #ifdef TOMATO

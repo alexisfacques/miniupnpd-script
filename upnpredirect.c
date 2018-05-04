@@ -120,6 +120,7 @@ lease_notice(const char * op,
 	}
 
 	else if (pid == 0) {
+			syslog(LOG_INFO, "Executing script");
 		 execl(lease_script, op, eport, iaddr, iport, proto, desc, timestamp, NULL);
 		 return -1;
 	}

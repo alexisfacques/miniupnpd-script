@@ -153,6 +153,7 @@ LDLIBS += $(shell $(PKG_CONFIG) --static --libs-only-l libmnl)
 LDLIBS += $(shell $(PKG_CONFIG) --static --libs-only-l libnetfilter_conntrack)
 endif # ($(TEST),1)
 
+ifeq ($(TARGET_OPENWRT),)
 LDLIBS += $(shell $(PKG_CONFIG) --static --libs-only-l libssl)
 
 TEST := $(shell $(PKG_CONFIG) --exists uuid && echo 1)
@@ -161,6 +162,7 @@ LDLIBS += $(shell $(PKG_CONFIG) --static --libs-only-l uuid)
 else
 $(info please install uuid-dev package / libuuid)
 endif # ($(TEST),1)
+endif
 
 TESTUPNPDESCGENOBJS = testupnpdescgen.o upnpdescgen.o
 

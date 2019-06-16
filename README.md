@@ -1,25 +1,56 @@
 # MiniUPnPd - Lease script version
 
-This is a fork from [miniupnp/miniupnpd](https://github.com/miniupnp/miniupnp/miniupnpd) allowing to execute a shell script on UPnP leasing (similar to dnsmasq lease script).
+This is a fork from [miniupnp/miniupnpd](https://github.com/miniupnp/miniupnp/miniupnpd) allowing to execute a shell script when an UPnP leasing operation is performed (similar to dnsmasq's lease script option). This allows you to track UPnP leases a little easier.
 
-## Getting Started
+## Table of Contents
+
+<!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
+
+- [MiniUPnPd - Lease script version](#miniupnpd-lease-script-version)
+	- [Table of Contents](#table-of-contents)
+	- [Getting started](#getting-started)
+		- [Usage](#usage)
+		- [Example of use](#example-of-use)
+	- [Installation](#installation)
+- [Original README](#original-readme)
+
+<!-- /TOC -->
+
+## Getting started
+### Usage
+
+In your `miniunp.conf` configuration file, specify the path to the shell script you want to execute upon an UPnP lease or configuration change with `lease_script=<path>` option.
+
+Whenever a new UPnP lease is created, or an old one destroyed, the executable specified by this option is run. `<path>` must be an absolute pathname, no `PATH` search occurs.
+In that specific order, the arguments to the process are:
+  - `up` (update operation), `add` (new port mapping), `del` (delete operation);
+  - The `wan port` to which the service is mapped to;
+  - The `protocol` code;
+  - The `lan address` to the host of the service;
+  - The `lan port` to the service;
+  - A `description` of the port forwarding rule that has been executed.
+
+### Example of use
+
+You may find an example a `miniupnp.conf` configuration file in [examples/mqttpub](./examples/mqttpub).
+This example requires `mosquitto_pub` to be installed on your machine, and a `mqtt` broker to run on your local environment.
+
+Assuming you copied the [`mqttpub.sh`](./examples/mqttpub/mqttpub.sh) script to your local `/tmp` directory, executing `miniupnp` with the example configuration file will publish a new mqtt message to your broker's `network/upnp` topic each time a new uPnP operation is performed.
+
+## Installation
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
-- Refer to the [INSTALL](./INSTALL) file for installation
+1. Refer to the [`INSTALL`](./INSTALL) file for installation;
 
-- Prior to building the project with `make -f Makefile.linux`, make sure you have the following flag enabled in your `config.h` file:
+2. **Prior to building the project** (`make -f Makefile.linux`), make sure you have the following flag enabled in your `config.h` file:
   ```c
   #define ENABLE_LEASESCRIPT
   ```
 
-- Alternatively, using the [`genconfig.sh`](./genconfig.sh) script (Buildroot / OpenWRT builds), the option is enabled along with the `--leasefile` flag.
+- Alternatively, using the [`genconfig.sh`](./genconfig.sh) script (cross-compilation / Buildroot / OpenWRT builds), the option is enabled along with the `--leasefile` flag.
 
-## Contributors
-
-- **Alexis Facques** - *Added the script file option* - [/alexisfacques](https://github.com/alexisfacques)
-
-## Original README
+# Original README
 
 MiniUPnP project
 (c) 2006-2017 Thomas Bernard
